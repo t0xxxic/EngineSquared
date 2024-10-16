@@ -31,21 +31,51 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace ES::Plugin::VkWrapper {
+#ifndef UINT32_MAX
+#include <limits>
+#define UINT32_MAX std::numeric_limits<uint32_t>::max()
+#endif
 
+#include "config.h"
+#include "export.h"
+
+#include "Instance.hpp"
+
+namespace ES::Plugin {
+
+/**
+ * @brief VkWrapper class.
+ *
+ * This class is a wrapper for the Vulkan API.
+ * It is used to simplify the use of Vulkan in the Engine².
+ *
+ * @example
+ * @code
+ * // Create a window
+ * ES::Plugin::Window::Resource::Window window(800, 600, "My Engine");
+ *
+ * // Create a VkWrapper
+ * ES::Plugin::VkWrapper vkWrapper("My Engine");
+ *
+ * while (!window.ShouldClose())
+ * {
+ *     glfwPollEvents();
+ *     vkWrapper.DrawFrame();
+ * }
+ * @endcode
+ */
 class VkWrapper {
   public:
-    VkWrapper();
+    VkWrapper(const std::string &applicationName);
     ~VkWrapper();
 
     void drawFrame();
 
   protected:
   private:
-    void InitVulkan();
-    void Cleanup();
+    Wrapper::Instance _instance;
 };
 
-} // namespace ES::Plugin::VkWrapper
+} // namespace ES::Plugin
 
 #endif /* !VKWRAPPER_HPP_ */
