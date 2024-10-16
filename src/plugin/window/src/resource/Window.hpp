@@ -17,7 +17,7 @@ namespace ES::Plugin::Window::Resource {
  * Window window(800, 600, "My Game");
  * while (!window.ShouldClose())
  * {
- *    GameLoop();
+ *    // Game loop
  * }
  * @endcode
  */
