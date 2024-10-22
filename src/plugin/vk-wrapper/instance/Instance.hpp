@@ -27,11 +27,14 @@
 #include <GLFW/glfw3.h>
 
 #include <cstdlib>
-#include <iostream>
-#include <stdexcept>
+#include <cstring>
 #include <string>
 
+#include "DebugMessenger.hpp"
+
 namespace ES::Plugin::Wrapper {
+
+const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
 
 /**
  * @brief Instance class.
@@ -49,7 +52,13 @@ class Instance {
     ~Instance();
 
   private:
-    VkInstance instance;
+    [[nodiscard]] bool CheckValidationLayerSupport();
+
+    [[nodiscard]] std::vector<const char *> getRequiredExtensions();
+
+  private:
+    VkInstance _instance;
+    DebugMessenger _debugMessenger;
 };
 
 } // namespace ES::Plugin::Wrapper
