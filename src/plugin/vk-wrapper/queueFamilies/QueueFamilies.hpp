@@ -41,14 +41,43 @@ namespace ES::Plugin::Wrapper {
  */
 class QueueFamilies {
   public:
+    /**
+     * @struct QueueFamilyIndices
+     * @brief Holds indices for Vulkan queue families.
+     *
+     * This structure contains optional indices for graphics and present queue families.
+     * It provides a method to check if the graphics family index and the present family has been set.
+     *
+     * @var std::optional<uint32_t> QueueFamilyIndices::graphicsFamily
+     * Optional index for the graphics queue family.
+     * Check if the physical device supports graphics operations.
+     *
+     * @var std::optional<uint32_t> QueueFamilyIndices::presentFamily
+     * Optional index for the present queue family.
+     * Check if WSI is supported by the physical device.
+     *
+     * @fn bool QueueFamilyIndices::isComplete() const
+     * @brief Checks if the graphics family index and the present family has been set.
+     * @return True if the graphics family index and the present family has a value, false otherwise.
+     */
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
 
-        [[nodiscard]] bool isComplete() const { return graphicsFamily.has_value(); }
+        [[nodiscard]] bool isComplete() const { return graphicsFamily.has_value() && presentFamily.has_value(); }
     };
 
   public:
-    void findQueueFamilies(VkPhysicalDevice device);
+    /**
+     * @brief Finds the queue families for a given Vulkan physical device.
+     *
+     * This function identifies the queue families that are supported by the specified
+     * Vulkan physical device. Queue families are groups of queues that support a
+     * particular set of operations, such as graphics, compute, or transfer operations.
+     *
+     * @param device The Vulkan physical device for which to find the queue families.
+     */
+    void findQueueFamilies(const VkPhysicalDevice device, const VkSurfaceKHR surface);
 
     [[nodiscard]] bool isComplete() const { return _indices.isComplete(); }
 

@@ -66,7 +66,7 @@ namespace ES::Plugin {
  */
 class VkWrapper {
   public:
-    VkWrapper(const std::string &applicationName);
+    VkWrapper(GLFWwindow *window, const std::string &applicationName);
     ~VkWrapper();
 
     void drawFrame();
