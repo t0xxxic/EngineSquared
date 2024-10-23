@@ -33,15 +33,20 @@
 #include "LogicalDevice.hpp"
 #include "PhysicalDevice.hpp"
 #include "Surface.hpp"
+#include "ImageView.hpp"
 
 namespace ES::Plugin::Wrapper {
 
 const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
 
 /**
- * @brief Instance class.
+ * @class Instance
+ * @brief Manages the Vulkan instance and related resources.
  *
- * This class is used to create an instance of the Vulkan API.
+ * The Instance class is responsible for initializing and managing the Vulkan
+ * instance, setting up the debug messenger, creating surfaces, selecting
+ * physical devices, and creating logical devices and swap chains. It provides
+ * essential functionality for setting up and managing Vulkan operations.
  *
  * @example
  * @code
@@ -50,7 +55,20 @@ const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation
  */
 class Instance {
   public:
+    /**
+     * @brief Constructor for the Instance class.
+     *
+     * Initializes the Vulkan instance with the specified application name.
+     *
+     * @param applicationName The name of the application.
+     */
     Instance(const std::string &applicationName);
+
+    /**
+     * @brief Destructor for the Instance class.
+     *
+     * Cleans up and destroys the Vulkan instance and related resources.
+     */
     ~Instance();
 
     /**
@@ -74,26 +92,43 @@ class Instance {
     void createSurface(GLFWwindow *window);
 
     /**
-     * @brief Picks a suitable physical device (GPU) for Vulkan operations.
+     * @brief Picks a suitable physical device (GPU) for Vulkan operations and creates a logical device.
      *
      * This function selects a physical device that meets the requirements
      * for running Vulkan applications. It evaluates available GPUs and
      * chooses the most appropriate one based on criteria such as support
-     * for required features and extensions.
-     *
-     * @brief Creates a logical device from the selected physical device.
-     *
-     * This function creates a logical device, which is an abstraction
-     * representing the GPU. It enables communication with the physical
-     * device and allows the application to execute Vulkan commands.
-     * The logical device is configured with specific features and
+     * for required features and extensions. It then creates a logical device,
+     * which is an abstraction representing the GPU. The logical device enables
+     * communication with the physical device and allows the application to
+     * execute Vulkan commands. It is configured with specific features and
      * extensions required by the application.
      */
     void setupDevices();
 
+    /**
+     * @brief Creates swap chain images for the Vulkan API.
+     *
+     * This function creates a swap chain for the Vulkan API. The swap chain
+     * is used to manage the presentation of images to the screen. It is
+     * essential for rendering graphics to the window and ensuring smooth
+     * frame transitions.
+     *
+     * @param width The width of the swap chain.
+     * @param height The height of the swap chain.
+     */
+    void createSwapChainImages(const uint32_t width, const uint32_t height);
+
   private:
     [[nodiscard]] bool CheckValidationLayerSupport();
 
+    /**
+     * @brief Gets the required extensions for the Vulkan API.
+     *
+     * This function retrieves the list of required extensions that need to be
+     * enabled for the Vulkan instance.
+     *
+     * @return std::vector<const char *> The required extensions for the Vulkan API.
+     */
     [[nodiscard]] std::vector<const char *> getRequiredExtensions();
 
   private:
@@ -103,6 +138,7 @@ class Instance {
     LogicalDevice _logicalDevice;
     Surface _surface;
     SwapChain _swapChain;
+    ImageView _imageView;
 };
 
 } // namespace ES::Plugin::Wrapper
