@@ -34,7 +34,8 @@ void LogicalDevice::create(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface
 
     createInfo.pEnabledFeatures = &deviceFeatures;
 
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = (uint32_t) deviceExtensions.size();
+    createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
     if (enableValidationLayers)
     {
