@@ -49,8 +49,12 @@ Instance::Instance(const std::string &applicationName)
 
 Instance::~Instance()
 {
-    _imageView.destroy(_logicalDevice.getDevice());
-    _swapChain.destroy(_logicalDevice.getDevice());
+    auto device = _logicalDevice.getDevice();
+
+    _graphicsPipeline.destroy(device);
+    _renderPass.destroy(device);
+    _imageView.destroy(device);
+    _swapChain.destroy(device);
     _logicalDevice.destroy();
 
     if (enableValidationLayers)
@@ -126,6 +130,10 @@ void Instance::createSwapChainImages(const uint32_t width, const uint32_t height
     _imageView.create(_logicalDevice.getDevice(), _swapChain.getSwapChainImages(), _swapChain.getSurfaceFormat());
 }
 
-void Instance::createGraphicsPipeline() { _graphicsPipeline.create(_logicalDevice.getDevice()); }
+void Instance::createGraphicsPipeline()
+{
+    _renderPass.create(_logicalDevice.getDevice(), _swapChain.getSurfaceFormat().format);
+    _graphicsPipeline.create(_logicalDevice.getDevice(), _swapChain.getExtent(), _renderPass.getRenderPass());
+}
 
 } // namespace ES::Plugin::Wrapper

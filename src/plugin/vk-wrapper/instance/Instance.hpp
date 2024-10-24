@@ -31,7 +31,7 @@
 #include "LogicalDevice.hpp"
 #include "PhysicalDevice.hpp"
 #include "Surface.hpp"
-#include "ImageView.hpp"
+#include "RenderPass.hpp"
 
 namespace ES::Plugin::Wrapper {
 
@@ -140,6 +140,7 @@ class Instance {
     SwapChain _swapChain;
     ImageView _imageView;
     GraphicsPipeline _graphicsPipeline;
+    RenderPass _renderPass;
 };
 
 } // namespace ES::Plugin::Wrapper
