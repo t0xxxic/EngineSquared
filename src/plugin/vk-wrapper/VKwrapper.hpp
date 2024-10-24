@@ -24,21 +24,6 @@
 #ifndef VKWRAPPER_HPP_
 #define VKWRAPPER_HPP_
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-#include <cstdlib>
-#include <iostream>
-#include <stdexcept>
-
-#ifndef UINT32_MAX
-#include <limits>
-#define UINT32_MAX std::numeric_limits<uint32_t>::max()
-#endif
-
-#include "config.h"
-#include "export.h"
-
 #include "Instance.hpp"
 
 namespace ES::Plugin {

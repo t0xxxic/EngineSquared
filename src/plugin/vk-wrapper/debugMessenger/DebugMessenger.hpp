@@ -28,6 +28,9 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "config.h"
+#include "export.h"
+
 namespace ES::Plugin::Wrapper {
 
 #ifdef VKWRAPPER_DEBUG
