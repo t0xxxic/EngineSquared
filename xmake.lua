@@ -53,6 +53,15 @@ target("EngineSquared")
         add_cxflags("-O2")
     end
 
+target("shader")
+    set_kind("phony")
+    add_deps("EngineSquared")
+    on_build(function(target)
+        import("core.base.option")
+        os.execv("glslc", {"shaders/shader.vert", "-o", "shaders/vert.spv"})
+        os.execv("glslc", {"shaders/shader.frag", "-o", "shaders/frag.spv"})
+    end)
+
 for _, file in ipairs(os.files("tests/**.cpp")) do
     local name = path.basename(file)
     if name == "main" then

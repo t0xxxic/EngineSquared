@@ -26,6 +26,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "GraphicsPipeline.hpp"
+#include "ImageView.hpp"
 #include "LogicalDevice.hpp"
 #include "PhysicalDevice.hpp"
 #include "Surface.hpp"
@@ -114,6 +116,8 @@ class Instance {
      */
     void createSwapChainImages(const uint32_t width, const uint32_t height);
 
+    void createGraphicsPipeline();
+
   private:
     [[nodiscard]] bool CheckValidationLayerSupport();
 
@@ -135,6 +139,7 @@ class Instance {
     Surface _surface;
     SwapChain _swapChain;
     ImageView _imageView;
+    GraphicsPipeline _graphicsPipeline;
 };
 
 } // namespace ES::Plugin::Wrapper

@@ -18,6 +18,7 @@ VkWrapper::VkWrapper(GLFWwindow *window, const std::string &applicationName) : _
     _instance.createSurface(window);
     _instance.setupDevices();
     _instance.createSwapChainImages(width, height);
+    _instance.createGraphicsPipeline();
 }
 
 VkWrapper::~VkWrapper() {}
