@@ -26,6 +26,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "Command.hpp"
+#include "Framebuffer.hpp"
 #include "GraphicsPipeline.hpp"
 #include "ImageView.hpp"
 #include "LogicalDevice.hpp"
@@ -142,6 +144,7 @@ class Instance {
     GraphicsPipeline _graphicsPipeline;
     RenderPass _renderPass;
     Framebuffer _framebuffer;
+    Command _command;
 };
 
 } // namespace ES::Plugin::Wrapper

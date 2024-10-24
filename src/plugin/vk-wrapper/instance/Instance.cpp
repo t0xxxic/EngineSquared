@@ -135,8 +135,23 @@ void Instance::createGraphicsPipeline()
 {
     _renderPass.create(_logicalDevice.getDevice(), _swapChain.getSurfaceFormat().format);
     _graphicsPipeline.create(_logicalDevice.getDevice(), _swapChain.getExtent(), _renderPass.getRenderPass());
-    _framebuffer.create(_logicalDevice.getDevice(), _swapChain.getExtent(), _renderPass.getRenderPass(),
-                        _imageView.getImageViews());
+
+    Framebuffer::CreateInfo framebufferInfo{};
+    framebufferInfo.swapChainExtent = _swapChain.getExtent();
+    framebufferInfo.renderPass = _renderPass.getRenderPass();
+    framebufferInfo.swapChainImageViews = _imageView.getImageViews();
+
+    _framebuffer.create(_logicalDevice.getDevice(), framebufferInfo);
+
+    Command::CreateInfo commandInfo{};
+    commandInfo.physicalDevice = _physicalDevice.GetPhysicalDevice();
+    commandInfo.surface = _surface.getSurface();
+    commandInfo.swapChainExtent = _swapChain.getExtent();
+    commandInfo.renderPass = _renderPass.getRenderPass();
+    commandInfo.swapChainFramebuffers = _framebuffer.getSwapChainFramebuffers();
+    commandInfo.graphicsPipeline = _graphicsPipeline.getGraphicsPipeline();
+
+    _command.create(_logicalDevice.getDevice(), commandInfo);
 }
 
 } // namespace ES::Plugin::Wrapper
