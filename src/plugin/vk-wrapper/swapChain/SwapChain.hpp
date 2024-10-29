@@ -51,12 +51,40 @@ class SwapChain {
     };
 
   public:
-    static [[nodiscard]] SupportDetails querySupport(const VkPhysicalDevice device, const VkSurfaceKHR surface);
+    /**
+     * @brief Query the support of the swap chain.
+     *
+     * @param device  The device.
+     * @param surface  The surface.
+     * @return SupportDetails  The details of the swap chain support.
+     */
+    [[nodiscard]] static SupportDetails querySupport(const VkPhysicalDevice device, const VkSurfaceKHR surface);
 
-    void create(const VkPhysicalDevice physicalDevice, const VkDevice device, const VkSurfaceKHR surface,
+    /**
+     * @brief Create the Swap Chain object.
+     *
+     * @param device  The device.
+     * @param physicalDevice  The physical device.
+     * @param surface  The surface.
+     * @param width  The width.
+     * @param height  The height.
+     */
+    void create(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkSurfaceKHR surface,
                 const uint32_t width, const uint32_t height);
 
+    /**
+     * @brief Destroy the Swap Chain object.
+     *
+     * @param device  The device.
+     */
     void destroy(const VkDevice device) { vkDestroySwapchainKHR(device, _swapChain, nullptr); }
+
+    /**
+     * @brief Get the Swap Chain object.
+     *
+     * @return const VkSwapchainKHR  The swap chain.
+     */
+    [[nodiscard]] const VkSwapchainKHR get() const { return _swapChain; }
 
     /**
      * @brief Get the Details object for the swap chain support.
