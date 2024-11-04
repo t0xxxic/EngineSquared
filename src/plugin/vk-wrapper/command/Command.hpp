@@ -82,6 +82,7 @@ class Command {
      * @var std::vector<VkFramebuffer> RecordInfo::swapChainFramebuffers  The swap chain framebuffers.
      * @var VkPipeline RecordInfo::graphicsPipeline  The graphics pipeline.
      * @var VkBuffer RecordInfo::vertexBuffer  The vertex buffer.
+     * @var VkBuffer RecordInfo::indexBuffer  The index buffer.
      */
     struct RecordInfo {
         uint32_t currentFrame;
@@ -91,6 +92,7 @@ class Command {
         std::vector<VkFramebuffer> swapChainFramebuffers;
         VkPipeline graphicsPipeline;
         VkBuffer vertexBuffer;
+        VkBuffer indexBuffer;
     };
 
   public:

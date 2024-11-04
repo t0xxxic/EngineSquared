@@ -42,7 +42,7 @@ namespace ES::Plugin::Wrapper {
 class VertexBuffer {
   public:
     /**
-     * @brief Create the VertexBuffer object.
+     * @brief Create the VertexBuffer object and the IndexBuffer object.
      *
      * @param device The Vulkan device.
      * @param physicalDevice The Vulkan physical device.
@@ -65,6 +65,13 @@ class VertexBuffer {
      * @return const VkBuffer& The buffer.
      */
     [[nodiscard]] const VkBuffer &Get() const { return _buffer; }
+
+    /**
+     * @brief Get the index buffer.
+     *
+     * @return const VkBuffer& The index buffer.
+     */
+    [[nodiscard]] const VkBuffer &GetIndexBuffer() const { return _indexBuffer; }
 
   private:
     void CreateBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkDeviceSize size,
@@ -89,14 +96,17 @@ class VertexBuffer {
      * @param commandPool  The Vulkan command pool.
      * @param graphicsQueue  The Vulkan graphics queue.
      * @param srcBuffer  The source buffer.
+     * @param dstBuffer  The destination buffer.
      * @param size  The size of the buffer.
      */
     void CopyBuffer(const VkDevice &device, const VkCommandPool &commandPool, const VkQueue &graphicsQueue,
-                    const VkBuffer &srcBuffer, VkDeviceSize size);
+                    const VkBuffer &srcBuffer, const VkBuffer &dstBuffer, VkDeviceSize size);
 
   private:
     VkBuffer _buffer;
     VkDeviceMemory _bufferMemory;
+    VkBuffer _indexBuffer;
+    VkDeviceMemory _indexBufferMemory;
 };
 
 } // namespace ES::Plugin::Wrapper

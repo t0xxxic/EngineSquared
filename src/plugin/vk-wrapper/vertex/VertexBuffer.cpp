@@ -32,7 +32,30 @@ void VertexBuffer::Create(const VkDevice &device, const VkPhysicalDevice &physic
                  VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _buffer, _bufferMemory);
 
-    CopyBuffer(device, commandPool, graphicsQueue, stagingBuffer, bufferSize);
+    CopyBuffer(device, commandPool, graphicsQueue, stagingBuffer, _buffer, bufferSize);
+
+    vkDestroyBuffer(device, stagingBuffer, nullptr);
+    vkFreeMemory(device, stagingBufferMemory, nullptr);
+
+    bufferSize = sizeof(INDICES[0]) * INDICES.size();
+
+    stagingBuffer = {};
+    stagingBufferMemory = {};
+
+    CreateBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+                 stagingBufferMemory);
+
+    data = nullptr;
+    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    memcpy(data, INDICES.data(), bufferSize);
+    vkUnmapMemory(device, stagingBufferMemory);
+
+    CreateBuffer(device, physicalDevice, bufferSize,
+                 VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer, _indexBufferMemory);
+
+    CopyBuffer(device, commandPool, graphicsQueue, stagingBuffer, _indexBuffer, bufferSize);
 
     vkDestroyBuffer(device, stagingBuffer, nullptr);
     vkFreeMemory(device, stagingBufferMemory, nullptr);
@@ -40,6 +63,9 @@ void VertexBuffer::Create(const VkDevice &device, const VkPhysicalDevice &physic
 
 void VertexBuffer::Destroy(const VkDevice &device)
 {
+    vkDestroyBuffer(device, _indexBuffer, nullptr);
+    vkFreeMemory(device, _indexBufferMemory, nullptr);
+
     vkDestroyBuffer(device, _buffer, nullptr);
     vkFreeMemory(device, _bufferMemory, nullptr);
 }
@@ -85,7 +111,7 @@ uint32_t VertexBuffer::FindMemoryType(const VkPhysicalDevice &physicalDevice, co
 }
 
 void VertexBuffer::CopyBuffer(const VkDevice &device, const VkCommandPool &commandPool, const VkQueue &graphicsQueue,
-                              const VkBuffer &srcBuffer, VkDeviceSize size)
+                              const VkBuffer &srcBuffer, const VkBuffer &dstBuffer, VkDeviceSize size)
 {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -104,7 +130,7 @@ void VertexBuffer::CopyBuffer(const VkDevice &device, const VkCommandPool &comma
 
     VkBufferCopy copyRegion{};
     copyRegion.size = size;
-    vkCmdCopyBuffer(commandBuffer, srcBuffer, _buffer, 1, &copyRegion);
+    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
     vkEndCommandBuffer(commandBuffer);
 
