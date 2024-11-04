@@ -23,6 +23,7 @@
 #define COMMAND_HPP_
 
 #include "QueueFamilies.hpp"
+#include "VertexBuffer.hpp"
 
 namespace ES::Plugin::Wrapper {
 
@@ -80,6 +81,7 @@ class Command {
      * @var VkExtent2D RecordInfo::swapChainExtent  The swap chain extent.
      * @var std::vector<VkFramebuffer> RecordInfo::swapChainFramebuffers  The swap chain framebuffers.
      * @var VkPipeline RecordInfo::graphicsPipeline  The graphics pipeline.
+     * @var VkBuffer RecordInfo::vertexBuffer  The vertex buffer.
      */
     struct RecordInfo {
         uint32_t currentFrame;
@@ -88,6 +90,7 @@ class Command {
         VkExtent2D swapChainExtent;
         std::vector<VkFramebuffer> swapChainFramebuffers;
         VkPipeline graphicsPipeline;
+        VkBuffer vertexBuffer;
     };
 
   public:

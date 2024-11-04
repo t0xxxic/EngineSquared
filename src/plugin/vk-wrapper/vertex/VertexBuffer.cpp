@@ -34,9 +34,20 @@ void VertexBuffer::Create(const VkDevice &device, const VkPhysicalDevice &physic
 
     if (vkAllocateMemory(device, &allocInfo, nullptr, &_bufferMemory) != VK_SUCCESS)
         throw VkWrapperError("failed to allocate vertex buffer memory!");
+
+    vkBindBufferMemory(device, _buffer, _bufferMemory, 0);
+
+    void *data;
+    vkMapMemory(device, _bufferMemory, 0, bufferInfo.size, 0, &data);
+    memcpy(data, VERTICES.data(), bufferInfo.size);
+    vkUnmapMemory(device, _bufferMemory);
 }
 
-void VertexBuffer::Destroy(const VkDevice &device) { vkDestroyBuffer(device, _buffer, nullptr); }
+void VertexBuffer::Destroy(const VkDevice &device)
+{
+    vkDestroyBuffer(device, _buffer, nullptr);
+    vkFreeMemory(device, _bufferMemory, nullptr);
+}
 
 uint32_t VertexBuffer::FindMemoryType(const VkPhysicalDevice &physicalDevice, const uint32_t typeFilter,
                                       const VkMemoryPropertyFlags properties)

@@ -254,6 +254,7 @@ Result Instance::DrawNextImage()
     recordInfo.swapChainExtent = _swapChain.GetExtent();
     recordInfo.swapChainFramebuffers = _framebuffer.GetSwapChainFramebuffers();
     recordInfo.graphicsPipeline = _graphicsPipeline.Get();
+    recordInfo.vertexBuffer = _vertexBuffer.Get();
 
     _command.RecordBuffer(recordInfo);
 
