@@ -24,7 +24,6 @@
 #define INSTANCE_HPP_
 
 #include <cstdlib>
-#include <cstring>
 
 #include "Command.hpp"
 #include "Framebuffer.hpp"

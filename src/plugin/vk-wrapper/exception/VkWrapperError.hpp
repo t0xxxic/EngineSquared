@@ -24,6 +24,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <cstring>
 
 namespace ES::Plugin::Wrapper {
 
