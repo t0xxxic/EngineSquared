@@ -26,6 +26,7 @@
 #include <cstdlib>
 
 #include "Command.hpp"
+#include "DescriptorLayout.hpp"
 #include "Framebuffer.hpp"
 #include "GraphicsPipeline.hpp"
 #include "ImageView.hpp"
@@ -33,7 +34,6 @@
 #include "PhysicalDevice.hpp"
 #include "RenderPass.hpp"
 #include "Surface.hpp"
-#include "DescriptorLayout.hpp"
 
 namespace ES::Plugin::Wrapper {
 

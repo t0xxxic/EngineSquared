@@ -22,8 +22,8 @@
 #ifndef GRAPHICSPIPELINE_HPP_
 #define GRAPHICSPIPELINE_HPP_
 
-#include "ShaderModule.hpp"
 #include "Buffer.hpp"
+#include "ShaderModule.hpp"
 
 namespace ES::Plugin::Wrapper {
 

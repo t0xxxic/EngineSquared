@@ -22,8 +22,8 @@
 #ifndef COMMAND_HPP_
 #define COMMAND_HPP_
 
-#include "QueueFamilies.hpp"
 #include "Buffer.hpp"
+#include "QueueFamilies.hpp"
 
 namespace ES::Plugin::Wrapper {
 
