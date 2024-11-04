@@ -51,9 +51,11 @@ Instance::~Instance()
 {
     auto device = _logicalDevice.getDevice();
 
-    cleanupSwapChain(device);
-    _graphicsPipeline.destroy(device);
-    _renderPass.destroy(device);
+    CleanupSwapChain(device);
+    _descriptorLayout.Destroy(device);
+    _buffers.Destroy(device);
+    _graphicsPipeline.Destroy(device);
+    _renderPass.Destroy(device);
 
     for (uint32_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
     {
@@ -140,8 +142,15 @@ void Instance::createSwapChainImages(const uint32_t width, const uint32_t height
 
 void Instance::createGraphicsPipeline()
 {
-    _renderPass.create(_logicalDevice.getDevice(), _swapChain.getSurfaceFormat().format);
-    _graphicsPipeline.create(_logicalDevice.getDevice(), _swapChain.getExtent(), _renderPass.getRenderPass());
+    auto device = _logicalDevice.Get();
+    auto extent = _swapChain.GetExtent();
+
+    _renderPass.Create(device, _swapChain.GetSurfaceFormat().format);
+
+    _descriptorLayout.Create(device);
+    _graphicsPipeline.Create(device, extent, _renderPass.Get(), shaders);
+
+    auto renderPass = _renderPass.Get();
 
     Framebuffer::CreateInfo framebufferInfo{};
     framebufferInfo.swapChainExtent = _swapChain.getExtent();
@@ -158,7 +167,10 @@ void Instance::createGraphicsPipeline()
     commandInfo.swapChainFramebuffers = _framebuffer.getSwapChainFramebuffers();
     commandInfo.graphicsPipeline = _graphicsPipeline.getGraphicsPipeline();
 
-    _command.create(device, commandInfo);
+    _command.Create(device, commandInfo);
+
+    _buffers.Create(device, physicalDevice, _command.GetCommandPool(), _logicalDevice.GetGraphicsQueue(),
+                    _swapChain.GetSwapChainImages());
 }
 
 void Instance::createSyncObjects()
@@ -230,10 +242,12 @@ Result Instance::drawNextImage()
     Command::RecordInfo recordInfo{};
     recordInfo.currentFrame = _currentFrame;
     recordInfo.imageIndex = imageIndex;
-    recordInfo.renderPass = _renderPass.get();
-    recordInfo.swapChainExtent = _swapChain.getExtent();
-    recordInfo.swapChainFramebuffers = _framebuffer.getSwapChainFramebuffers();
-    recordInfo.graphicsPipeline = _graphicsPipeline.get();
+    recordInfo.renderPass = _renderPass.Get();
+    recordInfo.swapChainExtent = _swapChain.GetExtent();
+    recordInfo.swapChainFramebuffers = _framebuffer.GetSwapChainFramebuffers();
+    recordInfo.graphicsPipeline = _graphicsPipeline.Get();
+    recordInfo.vertexBuffer = _buffers.GetVertexBuffer();
+    recordInfo.indexBuffer = _buffers.GetIndexBuffer();
 
     _command.recordBuffer(recordInfo);
 

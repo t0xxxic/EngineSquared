@@ -23,6 +23,7 @@
 #define COMMAND_HPP_
 
 #include "QueueFamilies.hpp"
+#include "Buffer.hpp"
 
 namespace ES::Plugin::Wrapper {
 
@@ -48,7 +49,23 @@ class Command {
   public:
     void create(const VkDevice device, const CreateInfo info);
 
-    void destroy(const VkDevice device);
+    /**
+     * @brief Creates command buffers.
+     *
+     * This function creates command buffers using the command pool.
+     *
+     * @param device  The Vulkan device.
+     */
+    void CreateCommandBuffers(const VkDevice &device);
+
+    /**
+     * @brief Destroys the command pool.
+     *
+     * This function destroys the command pool.
+     *
+     * @param device  The Vulkan device.
+     */
+    void Destroy(const VkDevice &device);
 
   private:
     void record(VkCommandBuffer commandBuffer, uint32_t imageIndex, const VkRenderPass renderPass,

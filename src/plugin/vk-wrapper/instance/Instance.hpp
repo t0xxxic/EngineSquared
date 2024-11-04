@@ -33,7 +33,7 @@
 #include "LogicalDevice.hpp"
 #include "PhysicalDevice.hpp"
 #include "Surface.hpp"
-#include "Framebuffer.hpp"
+#include "DescriptorLayout.hpp"
 
 namespace ES::Plugin::Wrapper {
 
@@ -224,9 +224,11 @@ class Instance {
     Surface _surface;
     SwapChain _swapChain;
     ImageView _imageView;
+    DescriptorLayout _descriptorLayout;
     GraphicsPipeline _graphicsPipeline;
     RenderPass _renderPass;
     Framebuffer _framebuffer;
+    Buffers _buffers;
     Command _command;
     std::vector<VkSemaphore> _imageAvailableSemaphores;
     std::vector<VkSemaphore> _renderFinishedSemaphores;

@@ -22,7 +22,12 @@ void Command::create(const VkDevice device, const CreateInfo info)
     if (vkCreateCommandPool(device, &poolInfo, nullptr, &_commandPool) != VK_SUCCESS)
         throw std::runtime_error("failed to create command pool!");
 
-    _commandBuffers.resize(info.swapChainFramebuffers.size());
+    CreateCommandBuffers(device);
+}
+
+void Command::CreateCommandBuffers(const VkDevice &device)
+{
+    _commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
