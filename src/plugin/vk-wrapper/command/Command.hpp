@@ -140,7 +140,10 @@ class Command {
      * @param imageIndex  The image index.
      * @return The command buffer.
      */
-    [[nodiscard]] const VkCommandBuffer &GetCommandBuffer(const uint32_t imageIndex) { return _commandBuffers[imageIndex]; }
+    [[nodiscard]] const VkCommandBuffer &GetCommandBuffer(const uint32_t imageIndex)
+    {
+        return _commandBuffers[imageIndex];
+    }
 
   private:
     VkCommandPool _commandPool;
