@@ -1,18 +1,16 @@
-/*
-** EPITECH PROJECT, 2024
-** Title: EngineSquared
-** Author: MasterLaplace
-** Created: 2024-11-03
-** File description:
-** VertexBuffer
-*/
-
-#include "VertexBuffer.hpp"
+#include "Buffer.hpp"
 
 namespace ES::Plugin::Wrapper {
 
-void VertexBuffer::Create(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
-                          const VkCommandPool &commandPool, const VkQueue &graphicsQueue)
+void Buffers::Create(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkCommandPool &commandPool,
+                     const VkQueue &graphicsQueue, const std::vector<VkImage> &swapChainImages)
+{
+    CreateVertexBuffer(device, physicalDevice, commandPool, graphicsQueue);
+    CreateIndexBuffer(device, physicalDevice, commandPool, graphicsQueue);
+}
+
+void Buffers::CreateVertexBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
+                                 const VkCommandPool &commandPool, const VkQueue &graphicsQueue)
 {
     VkDeviceSize bufferSize = sizeof(VERTICES[0]) * VERTICES.size();
 
@@ -30,23 +28,27 @@ void VertexBuffer::Create(const VkDevice &device, const VkPhysicalDevice &physic
 
     CreateBuffer(device, physicalDevice, bufferSize,
                  VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _buffer, _bufferMemory);
+                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer, _vertexBufferMemory);
 
-    CopyBuffer(device, commandPool, graphicsQueue, stagingBuffer, _buffer, bufferSize);
+    CopyBuffer(device, commandPool, graphicsQueue, stagingBuffer, _vertexBuffer, bufferSize);
 
     vkDestroyBuffer(device, stagingBuffer, nullptr);
     vkFreeMemory(device, stagingBufferMemory, nullptr);
+}
 
-    bufferSize = sizeof(INDICES[0]) * INDICES.size();
+void Buffers::CreateIndexBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
+                                const VkCommandPool &commandPool, const VkQueue &graphicsQueue)
+{
+    VkDeviceSize bufferSize = sizeof(INDICES[0]) * INDICES.size();
 
-    stagingBuffer = {};
-    stagingBufferMemory = {};
+    VkBuffer stagingBuffer{};
+    VkDeviceMemory stagingBufferMemory{};
 
     CreateBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
                  stagingBufferMemory);
 
-    data = nullptr;
+    void *data = nullptr;
     vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
     memcpy(data, INDICES.data(), bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
@@ -61,18 +63,18 @@ void VertexBuffer::Create(const VkDevice &device, const VkPhysicalDevice &physic
     vkFreeMemory(device, stagingBufferMemory, nullptr);
 }
 
-void VertexBuffer::Destroy(const VkDevice &device)
+void Buffers::Destroy(const VkDevice &device)
 {
     vkDestroyBuffer(device, _indexBuffer, nullptr);
     vkFreeMemory(device, _indexBufferMemory, nullptr);
 
-    vkDestroyBuffer(device, _buffer, nullptr);
-    vkFreeMemory(device, _bufferMemory, nullptr);
+    vkDestroyBuffer(device, _vertexBuffer, nullptr);
+    vkFreeMemory(device, _vertexBufferMemory, nullptr);
 }
 
-void VertexBuffer::CreateBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkDeviceSize size,
-                                const VkBufferUsageFlags usage, const VkMemoryPropertyFlags properties,
-                                VkBuffer &buffer, VkDeviceMemory &bufferMemory)
+void Buffers::CreateBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkDeviceSize size,
+                           const VkBufferUsageFlags usage, const VkMemoryPropertyFlags properties, VkBuffer &buffer,
+                           VkDeviceMemory &bufferMemory)
 {
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -97,8 +99,8 @@ void VertexBuffer::CreateBuffer(const VkDevice &device, const VkPhysicalDevice &
     vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
-uint32_t VertexBuffer::FindMemoryType(const VkPhysicalDevice &physicalDevice, const uint32_t typeFilter,
-                                      const VkMemoryPropertyFlags properties)
+uint32_t Buffers::FindMemoryType(const VkPhysicalDevice &physicalDevice, const uint32_t typeFilter,
+                                 const VkMemoryPropertyFlags properties)
 {
     VkPhysicalDeviceMemoryProperties memProperties{};
     vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -110,8 +112,8 @@ uint32_t VertexBuffer::FindMemoryType(const VkPhysicalDevice &physicalDevice, co
     throw VkWrapperError("failed to find suitable memory type!");
 }
 
-void VertexBuffer::CopyBuffer(const VkDevice &device, const VkCommandPool &commandPool, const VkQueue &graphicsQueue,
-                              const VkBuffer &srcBuffer, const VkBuffer &dstBuffer, VkDeviceSize size)
+void Buffers::CopyBuffer(const VkDevice &device, const VkCommandPool &commandPool, const VkQueue &graphicsQueue,
+                         const VkBuffer &srcBuffer, const VkBuffer &dstBuffer, VkDeviceSize size)
 {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;

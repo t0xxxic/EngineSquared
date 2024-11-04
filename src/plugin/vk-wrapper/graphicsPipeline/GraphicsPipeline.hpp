@@ -23,7 +23,7 @@
 #define GRAPHICSPIPELINE_HPP_
 
 #include "ShaderModule.hpp"
-#include "VertexBuffer.hpp"
+#include "Buffer.hpp"
 
 namespace ES::Plugin::Wrapper {
 

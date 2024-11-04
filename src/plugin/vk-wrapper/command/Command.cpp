@@ -14,6 +14,11 @@ void Command::Create(const VkDevice &device, const CreateInfo &info)
     if (vkCreateCommandPool(device, &poolInfo, nullptr, &_commandPool) != VK_SUCCESS)
         throw VkWrapperError("failed to create command pool!");
 
+    CreateCommandBuffers(device);
+}
+
+void Command::CreateCommandBuffers(const VkDevice &device)
+{
     _commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
     VkCommandBufferAllocateInfo allocInfo{};

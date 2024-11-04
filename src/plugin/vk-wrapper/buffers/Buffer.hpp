@@ -24,47 +24,60 @@
 
 #include "Vertex.hpp"
 
+#include <chrono>
+
 namespace ES::Plugin::Wrapper {
 
 /**
- * @brief VertexBuffer class.
+ * @brief Buffers class.
  *
- * This class is used to represent a vertex buffer in the Vulkan API.
- * It contains the buffer and buffer memory.
+ * This class is used to represent the buffers in the Vulkan API.
+ * It contains the vertex buffer, the index buffer, and the uniform buffer.
+ * The buffers are used to store the vertex data, index data, and uniform data.
  *
  * @example
  * @code
- * VertexBuffer vertexBuffer;
- * vertexBuffer.Create(device, physicalDevice);
- * vertexBuffer.Destroy(device);
+ * Buffers buffers;
+ * buffers.Create(device, physicalDevice, commandPool, graphicsQueue, swapChainImages);
+ * buffers.Destroy(device);
  * @endcode
  */
-class VertexBuffer {
+class Buffers {
   public:
     /**
-     * @brief Create the VertexBuffer object and the IndexBuffer object.
+     * @brief Create the VertexBuffer object, the IndexBuffer object and the UniformBuffer object.
      *
      * @param device The Vulkan device.
      * @param physicalDevice The Vulkan physical device.
      * @param commandPool The Vulkan command pool.
      * @param graphicsQueue The Vulkan graphics queue.
+     * @param swapChainImages The swap chain images. Only used for the uniform buffer.
      */
     void Create(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkCommandPool &commandPool,
-                const VkQueue &graphicsQueue);
+                const VkQueue &graphicsQueue, const std::vector<VkImage> &swapChainImages);
 
     /**
-     * @brief Destroy the VertexBuffer object.
+     * @brief Destroy the VertexBuffer object and the IndexBuffer object.
+     *
+     * @note The uniform buffer is destroyed in the DestroyUniformBuffers function.
      *
      * @param device The Vulkan device.
      */
     void Destroy(const VkDevice &device);
 
     /**
-     * @brief Get the buffer.
+     * @brief Destroy the UniformBuffer object.
      *
-     * @return const VkBuffer& The buffer.
+     * @param device The Vulkan device.
      */
-    [[nodiscard]] const VkBuffer &Get() const { return _buffer; }
+    void DestroyUniformBuffers(const VkDevice &device);
+
+    /**
+     * @brief Get the vertex buffer.
+     *
+     * @return const VkBuffer& The vertex buffer.
+     */
+    [[nodiscard]] const VkBuffer &GetVertexBuffer() const { return _vertexBuffer; }
 
     /**
      * @brief Get the index buffer.
@@ -74,6 +87,39 @@ class VertexBuffer {
     [[nodiscard]] const VkBuffer &GetIndexBuffer() const { return _indexBuffer; }
 
   private:
+    /**
+     * @brief Create a Vertex Buffer object in the Vulkan API.
+     *
+     * @param device  The Vulkan device.
+     * @param physicalDevice  The Vulkan physical device.
+     * @param commandPool  The Vulkan command pool.
+     * @param graphicsQueue  The Vulkan graphics queue.
+     */
+    void CreateVertexBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
+                            const VkCommandPool &commandPool, const VkQueue &graphicsQueue);
+
+    /**
+     * @brief Create a Index Buffer object in the Vulkan API.
+     *
+     * @param device  The Vulkan device.
+     * @param physicalDevice  The Vulkan physical device.
+     * @param commandPool  The Vulkan command pool.
+     * @param graphicsQueue  The Vulkan graphics queue.
+     */
+    void CreateIndexBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
+                           const VkCommandPool &commandPool, const VkQueue &graphicsQueue);
+
+    /**
+     * @brief Create a Buffer object in the Vulkan API.
+     *
+     * @param device  The Vulkan device.
+     * @param physicalDevice  The Vulkan physical device.
+     * @param size  The size of the buffer.
+     * @param usage  The usage of the buffer.
+     * @param properties  The properties of the buffer.
+     * @param buffer  The buffer.
+     * @param bufferMemory  The buffer memory.
+     */
     void CreateBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkDeviceSize size,
                       const VkBufferUsageFlags usage, const VkMemoryPropertyFlags properties, VkBuffer &buffer,
                       VkDeviceMemory &bufferMemory);
@@ -90,7 +136,7 @@ class VertexBuffer {
                             const VkMemoryPropertyFlags properties);
 
     /**
-     * @brief Copy the buffer.
+     * @brief Copy a buffer from the source buffer to the destination buffer.
      *
      * @param device  The Vulkan device.
      * @param commandPool  The Vulkan command pool.
@@ -103,8 +149,8 @@ class VertexBuffer {
                     const VkBuffer &srcBuffer, const VkBuffer &dstBuffer, VkDeviceSize size);
 
   private:
-    VkBuffer _buffer;
-    VkDeviceMemory _bufferMemory;
+    VkBuffer _vertexBuffer;
+    VkDeviceMemory _vertexBufferMemory;
     VkBuffer _indexBuffer;
     VkDeviceMemory _indexBufferMemory;
 };

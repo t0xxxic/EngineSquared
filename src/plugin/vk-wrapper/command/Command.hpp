@@ -23,7 +23,7 @@
 #define COMMAND_HPP_
 
 #include "QueueFamilies.hpp"
-#include "VertexBuffer.hpp"
+#include "Buffer.hpp"
 
 namespace ES::Plugin::Wrapper {
 
@@ -106,6 +106,15 @@ class Command {
      * @param queueFamilies  The queue families.
      */
     void Create(const VkDevice &device, const CreateInfo &info);
+
+    /**
+     * @brief Creates command buffers.
+     *
+     * This function creates command buffers using the command pool.
+     *
+     * @param device  The Vulkan device.
+     */
+    void CreateCommandBuffers(const VkDevice &device);
 
     /**
      * @brief Destroys the command pool.

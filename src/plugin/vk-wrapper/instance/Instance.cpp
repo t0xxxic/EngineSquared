@@ -46,7 +46,8 @@ void Instance::Destroy()
     VkDevice device = _logicalDevice.Get();
 
     CleanupSwapChain(device);
-    _vertexBuffer.Destroy(device);
+    _descriptorLayout.Destroy(device);
+    _buffers.Destroy(device);
     _graphicsPipeline.Destroy(device);
     _renderPass.Destroy(device);
 
@@ -146,6 +147,7 @@ void Instance::CreateGraphicsPipeline(const ShaderModule::ShaderPaths &shaders)
 
     _renderPass.Create(device, _swapChain.GetSurfaceFormat().format);
 
+    _descriptorLayout.Create(device);
     _graphicsPipeline.Create(device, extent, _renderPass.Get(), shaders);
 
     auto renderPass = _renderPass.Get();
@@ -169,7 +171,8 @@ void Instance::CreateGraphicsPipeline(const ShaderModule::ShaderPaths &shaders)
 
     _command.Create(device, commandInfo);
 
-    _vertexBuffer.Create(device, physicalDevice, _command.GetCommandPool(), _logicalDevice.GetGraphicsQueue());
+    _buffers.Create(device, physicalDevice, _command.GetCommandPool(), _logicalDevice.GetGraphicsQueue(),
+                    _swapChain.GetSwapChainImages());
 }
 
 void Instance::CreateSyncObjects()
@@ -245,8 +248,8 @@ Result Instance::DrawNextImage()
     recordInfo.swapChainExtent = _swapChain.GetExtent();
     recordInfo.swapChainFramebuffers = _framebuffer.GetSwapChainFramebuffers();
     recordInfo.graphicsPipeline = _graphicsPipeline.Get();
-    recordInfo.vertexBuffer = _vertexBuffer.Get();
-    recordInfo.indexBuffer = _vertexBuffer.GetIndexBuffer();
+    recordInfo.vertexBuffer = _buffers.GetVertexBuffer();
+    recordInfo.indexBuffer = _buffers.GetIndexBuffer();
 
     _command.RecordBuffer(recordInfo);
 
