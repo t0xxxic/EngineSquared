@@ -168,8 +168,6 @@ void Instance::CreateGraphicsPipeline(const ShaderModule::ShaderPaths &shaders)
 
     auto physicalDevice = _physicalDevice.Get();
 
-    _vertexBuffer.Create(device, physicalDevice);
-
     Command::CreateInfo commandInfo{};
     commandInfo.physicalDevice = physicalDevice;
     commandInfo.surface = _surface.Get();
@@ -179,6 +177,8 @@ void Instance::CreateGraphicsPipeline(const ShaderModule::ShaderPaths &shaders)
     commandInfo.graphicsPipeline = _graphicsPipeline.Get();
 
     _command.Create(device, commandInfo);
+
+    _vertexBuffer.Create(device, physicalDevice, _command.GetCommandPool(), _logicalDevice.GetGraphicsQueue());
 }
 
 void Instance::CreateSyncObjects()

@@ -46,8 +46,11 @@ class VertexBuffer {
      *
      * @param device The Vulkan device.
      * @param physicalDevice The Vulkan physical device.
+     * @param commandPool The Vulkan command pool.
+     * @param graphicsQueue The Vulkan graphics queue.
      */
-    void Create(const VkDevice &device, const VkPhysicalDevice &physicalDevice);
+    void Create(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkCommandPool &commandPool,
+                const VkQueue &graphicsQueue);
 
     /**
      * @brief Destroy the VertexBuffer object.
@@ -64,6 +67,10 @@ class VertexBuffer {
     [[nodiscard]] const VkBuffer &Get() const { return _buffer; }
 
   private:
+    void CreateBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkDeviceSize size,
+                      const VkBufferUsageFlags usage, const VkMemoryPropertyFlags properties, VkBuffer &buffer,
+                      VkDeviceMemory &bufferMemory);
+
     /**
      * @brief Find the memory type in the physical device.
      *
@@ -74,6 +81,18 @@ class VertexBuffer {
      */
     uint32_t FindMemoryType(const VkPhysicalDevice &physicalDevice, const uint32_t typeFilter,
                             const VkMemoryPropertyFlags properties);
+
+    /**
+     * @brief Copy the buffer.
+     *
+     * @param device  The Vulkan device.
+     * @param commandPool  The Vulkan command pool.
+     * @param graphicsQueue  The Vulkan graphics queue.
+     * @param srcBuffer  The source buffer.
+     * @param size  The size of the buffer.
+     */
+    void CopyBuffer(const VkDevice &device, const VkCommandPool &commandPool, const VkQueue &graphicsQueue,
+                    const VkBuffer &srcBuffer, VkDeviceSize size);
 
   private:
     VkBuffer _buffer;

@@ -95,9 +95,10 @@ class Command {
 
   public:
     /**
-     * @brief Creates a command pool.
+     * @brief Creates a command pool and command buffers.
      *
      * This function creates a command pool from the device and the queue families.
+     * It also creates command buffers using the command pool.
      *
      * @param device  The Vulkan device.
      * @param queueFamilies  The queue families.
@@ -123,6 +124,15 @@ class Command {
     void RecordBuffer(const RecordInfo &info);
 
     /**
+     * @brief Gets the command pool.
+     *
+     * This function returns the command pool.
+     *
+     * @return The command pool.
+     */
+    [[nodiscard]] const VkCommandPool &GetCommandPool() { return _commandPool; }
+
+    /**
      * @brief Gets the command buffer.
      *
      * This function returns the command buffer.
@@ -130,7 +140,7 @@ class Command {
      * @param imageIndex  The image index.
      * @return The command buffer.
      */
-    [[nodiscard]] VkCommandBuffer &GetCommandBuffer(const uint32_t imageIndex) { return _commandBuffers[imageIndex]; }
+    [[nodiscard]] const VkCommandBuffer &GetCommandBuffer(const uint32_t imageIndex) { return _commandBuffers[imageIndex]; }
 
   private:
     VkCommandPool _commandPool;
