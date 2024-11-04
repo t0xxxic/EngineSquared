@@ -250,6 +250,7 @@ class Instance {
     GraphicsPipeline _graphicsPipeline;
     RenderPass _renderPass;
     Framebuffer _framebuffer;
+    VertexBuffer _vertexBuffer;
     Command _command;
     std::vector<VkSemaphore> _imageAvailableSemaphores;
     std::vector<VkSemaphore> _renderFinishedSemaphores;

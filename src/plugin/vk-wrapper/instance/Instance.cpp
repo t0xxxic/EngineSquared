@@ -55,6 +55,7 @@ void Instance::Destroy()
     VkDevice device = _logicalDevice.Get();
 
     CleanupSwapChain(device);
+    _vertexBuffer.Destroy(device);
     _graphicsPipeline.Destroy(device);
     _renderPass.Destroy(device);
 
@@ -165,8 +166,12 @@ void Instance::CreateGraphicsPipeline(const ShaderModule::ShaderPaths &shaders)
 
     _framebuffer.Create(device, framebufferInfo);
 
+    auto physicalDevice = _physicalDevice.Get();
+
+    _vertexBuffer.Create(device, physicalDevice);
+
     Command::CreateInfo commandInfo{};
-    commandInfo.physicalDevice = _physicalDevice.Get();
+    commandInfo.physicalDevice = physicalDevice;
     commandInfo.surface = _surface.Get();
     commandInfo.swapChainExtent = extent;
     commandInfo.renderPass = renderPass;
