@@ -22,9 +22,9 @@
 #ifndef VKWRAPPERERROR_HPP_
 #define VKWRAPPERERROR_HPP_
 
+#include <cstring>
 #include <stdexcept>
 #include <string>
-#include <cstring>
 
 namespace ES::Plugin::Wrapper {
 
