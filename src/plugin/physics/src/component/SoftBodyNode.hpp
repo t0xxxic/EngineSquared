@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <nlohmann/json.hpp>
 
 namespace ES::Plugin::Physics::Component {
 /**
@@ -48,5 +49,36 @@ struct SoftBodyNode {
      * @param force Force to apply.
      */
     void ApplyForce(glm::vec3 force) { this->force += force; }
+
+    /**
+     * Serialize the SoftBodyNode to JSON
+     */
+    nlohmann::json serialize() const
+    {
+        return nlohmann::json{
+            {"mass",       mass      },
+            {"damping",    damping   },
+            {"friction",   friction  },
+            {"elasticity", elasticity}
+        };
+    }
+
+    /**
+     * Deserialize a SoftBodyNode from JSON
+     */
+    static SoftBodyNode deserialize(const nlohmann::json &json)
+    {
+        if (!json.contains("mass") || !json.contains("damping") || !json.contains("friction") ||
+            !json.contains("elasticity") || !json["mass"].is_number() || !json["damping"].is_number() ||
+            !json["friction"].is_number() || !json["elasticity"].is_number())
+            throw std::invalid_argument("Invalid JSON for SoftBodyNode deserialization");
+
+        float mass = json["mass"].get<float>();
+        float damping = json["damping"].get<float>();
+        float friction = json["friction"].get<float>();
+        float elasticity = json["elasticity"].get<float>();
+
+        return SoftBodyNode{mass, damping, friction, elasticity};
+    }
 };
 } // namespace ES::Plugin::Physics::Component
