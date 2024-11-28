@@ -1,5 +1,5 @@
 add_rules("mode.debug", "mode.release")
-add_requires("entt", "glm", "glfw")
+add_requires("entt", "glm", "glfw", "nlohmann_json")
 add_requires("gtest", {optional = true})
 
 includes("../../engine/xmake.lua")
@@ -14,7 +14,7 @@ target("PluginUI")
     set_kind("static")
     set_languages("cxx20")
     set_policy("build.warning", true)
-    add_packages("entt", "glm", "glfw")
+    add_packages("entt", "glm", "glfw", "nlohmann_json")
 
     add_deps("EngineSquaredCore")
     add_deps("PluginColors")
@@ -22,7 +22,7 @@ target("PluginUI")
     add_deps("PluginMath")
     add_deps("PluginInput")
     add_deps("PluginPhysics")
-    
+
     add_files("src/**.cpp")
     add_includedirs("src/", {public = true})
     add_includedirs("src/system", {public = true})
@@ -43,13 +43,13 @@ for _, file in ipairs(os.files("tests/**.cpp")) do
         set_languages("cxx20")
         add_links("gtest")
         add_tests("default")
-        add_packages("glm", "entt", "gtest")
-        
+        add_packages("glm", "entt", "gtest", "nlohmann_json")
+
         add_deps("PluginUI")
         add_deps("EngineSquaredCore")
         add_deps("PluginUtils")
         add_deps("PluginObject")
-        
+
         add_files(file)
         add_files("tests/main.cpp")
         if is_mode("debug") then

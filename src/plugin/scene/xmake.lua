@@ -1,5 +1,5 @@
 add_rules("mode.debug", "mode.release")
-add_requires("entt", "spdlog")
+add_requires("entt", "spdlog", "nlohmann_json")
 add_requires("gtest", {optional = true})
 
 includes("../../engine/xmake.lua")
@@ -10,7 +10,7 @@ target("PluginScene")
     set_kind("static")
     set_languages("cxx20")
     set_policy("build.warning", true)
-    add_packages("entt", "spdlog")
+    add_packages("entt", "spdlog", "nlohmann_json")
 
     add_deps("EngineSquaredCore")
     add_deps("UtilsLog")
@@ -37,11 +37,11 @@ for _, file in ipairs(os.files("tests/**.cpp")) do
         set_languages("cxx20")
         add_links("gtest")
         add_tests("default")
-        add_packages("glm", "entt", "gtest", "spdlog")
-        
+        add_packages("glm", "entt", "gtest", "spdlog", "nlohmann_json")
+
         add_deps("PluginScene")
         add_deps("EngineSquaredCore")
-        
+
         add_files(file)
         add_files("tests/main.cpp")
         if is_mode("debug") then
