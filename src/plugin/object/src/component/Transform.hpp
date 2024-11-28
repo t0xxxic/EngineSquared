@@ -5,6 +5,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
+#include <nlohmann/json.hpp>
 
 namespace ES::Plugin::Object::Component {
 /**
@@ -62,6 +63,47 @@ struct Transform {
         glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
         glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
         return translation * rotationMatrix * scaleMatrix;
+    }
+
+    /**
+     * Serialize the Transform to JSON
+     */
+    nlohmann::json serialize() const
+    {
+        return nlohmann::json{
+            {"position", {position.x, position.y, position.z}            },
+            {"scale",    {scale.x, scale.y, scale.z}                     },
+            {"rotation", {rotation.x, rotation.y, rotation.z, rotation.w}}
+        };
+    }
+
+    /**
+     * Deserialize a Transform from JSON
+     */
+    static Transform deserialize(const nlohmann::json &json)
+    {
+        if (!json.contains("position") || !json["position"].is_array() || json["position"].size() != 3 ||
+            !json["position"][0].is_number() || !json["position"][1].is_number() || !json["position"][2].is_number())
+            throw std::invalid_argument("Invalid JSON for Transform deserialization : position");
+
+        if (!json.contains("scale") || !json["scale"].is_array() || json["scale"].size() != 3 ||
+            !json["scale"][0].is_number() || !json["scale"][1].is_number() || !json["scale"][2].is_number())
+            throw std::invalid_argument("Invalid JSON for Transform deserialization : scale");
+
+        if (!json.contains("rotation") || !json["rotation"].is_array() || json["rotation"].size() != 4 ||
+            !json["rotation"][0].is_number() || !json["rotation"][1].is_number() || !json["rotation"][2].is_number() ||
+            !json["rotation"][3].is_number())
+            throw std::invalid_argument("Invalid JSON for Transform deserialization : rotation");
+
+        glm::vec3 position{json["position"][0].get<float>(), json["position"][1].get<float>(),
+                           json["position"][2].get<float>()};
+
+        glm::vec3 scale{json["scale"][0].get<float>(), json["scale"][1].get<float>(), json["scale"][2].get<float>()};
+
+        glm::quat rotation{json["rotation"][3].get<float>(), json["rotation"][0].get<float>(),
+                           json["rotation"][1].get<float>(), json["rotation"][2].get<float>()};
+
+        return Transform{position, scale, rotation};
     }
 };
 } // namespace ES::Plugin::Object::Component
