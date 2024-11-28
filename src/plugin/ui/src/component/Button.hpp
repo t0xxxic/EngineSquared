@@ -114,10 +114,10 @@ struct Button {
     nlohmann::json serialize() const
     {
         return nlohmann::json{
-            {"state", static_cast<int>(state)},
-            {"lastState", static_cast<int>(lastState)},
+            {"state",       static_cast<int>(state)                              },
+            {"lastState",   static_cast<int>(lastState)                          },
             {"displayType", std::visit([](auto &&arg) { return arg.serialize(); }, displayType)},
-            {"onClick", onClickScript.value_or("")}
+            {"onClick",             onClickScript.value_or("")                                                         }
         };
     }
 
