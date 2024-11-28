@@ -1,9 +1,11 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <variant>
 
 #include <entt/entt.hpp>
+#include <nlohmann/json.hpp>
 
 #include "Engine.hpp"
 
@@ -28,6 +30,18 @@ struct TintColor {
     ES::Plugin::Colors::Utils::Color normalColor;
     ES::Plugin::Colors::Utils::Color hoverColor;
     ES::Plugin::Colors::Utils::Color pressedColor;
+    /**
+     * Serialize the TintColor to JSON
+     */
+    nlohmann::json serialize() const
+    {
+        return nlohmann::json{
+            {"imageID",      imageID                                                         },
+            {"normalColor",  {normalColor.r, normalColor.g, normalColor.b, normalColor.a}    },
+            {"hoverColor",   {hoverColor.r, hoverColor.g, hoverColor.b, hoverColor.a}        },
+            {"pressedColor", {pressedColor.r, pressedColor.g, pressedColor.b, pressedColor.a}}
+        };
+    }
 };
 
 /**
@@ -41,6 +55,18 @@ struct Image {
     ES::Plugin::Object::Utils::AssetID normalImageID;
     ES::Plugin::Object::Utils::AssetID hoverImageID;
     ES::Plugin::Object::Utils::AssetID pressedImageID;
+
+    /**
+     * Serialize the Image to JSON
+     */
+    nlohmann::json serialize() const
+    {
+        return nlohmann::json{
+            {"normalImageID",  normalImageID },
+            {"hoverImageID",   hoverImageID  },
+            {"pressedImageID", pressedImageID}
+        };
+    }
 };
 
 /**
@@ -77,5 +103,72 @@ struct Button {
      * @brief The function to call when the button is clicked
      */
     std::function<void(ES::Engine::Registry &)> onClick;
+    /**
+     * @brief The script to call when the button is clicked
+     */
+    std::optional<std::string> onClickScript;
+
+    /**
+     * Serialize the Button to JSON
+     */
+    nlohmann::json serialize() const
+    {
+        return nlohmann::json{
+            {"state", static_cast<int>(state)},
+            {"lastState", static_cast<int>(lastState)},
+            {"displayType", std::visit([](auto &&arg) { return arg.serialize(); }, displayType)},
+            {"onClick", onClickScript.value_or("")}
+        };
+    }
+
+    /**
+     * Deserialize a Button from JSON
+     */
+    static Button deserialize(const nlohmann::json &json)
+    {
+        if (!json.contains("state") || !json.contains("lastState") || !json.contains("displayType") ||
+            !json.contains("onClick"))
+            throw std::invalid_argument("Invalid JSON for Button deserialization");
+
+        State state = static_cast<State>(json["state"].get<int>());
+        State lastState = static_cast<State>(json["lastState"].get<int>());
+        DisplayType::Variant displayType;
+
+        if (json["displayType"].contains("imageID"))
+        {
+            displayType =
+                DisplayType::Image{json["displayType"]["normalImageID"].get<ES::Plugin::Object::Utils::AssetID>(),
+                                   json["displayType"]["hoverImageID"].get<ES::Plugin::Object::Utils::AssetID>(),
+                                   json["displayType"]["pressedImageID"].get<ES::Plugin::Object::Utils::AssetID>()};
+        }
+        else
+        {
+            Colors::Utils::Color normalColor{json["displayType"]["normalColor"][0].get<unsigned char>(),
+                                             json["displayType"]["normalColor"][1].get<unsigned char>(),
+                                             json["displayType"]["normalColor"][2].get<unsigned char>(),
+                                             json["displayType"]["normalColor"][3].get<unsigned char>()};
+
+            Colors::Utils::Color hoverColor{json["displayType"]["hoverColor"][0].get<unsigned char>(),
+                                            json["displayType"]["hoverColor"][1].get<unsigned char>(),
+                                            json["displayType"]["hoverColor"][2].get<unsigned char>(),
+                                            json["displayType"]["hoverColor"][3].get<unsigned char>()};
+
+            Colors::Utils::Color pressedColor{json["displayType"]["pressedColor"][0].get<unsigned char>(),
+                                              json["displayType"]["pressedColor"][1].get<unsigned char>(),
+                                              json["displayType"]["pressedColor"][2].get<unsigned char>(),
+                                              json["displayType"]["pressedColor"][3].get<unsigned char>()};
+
+            displayType =
+                DisplayType::TintColor{json["displayType"]["imageID"].get<ES::Plugin::Object::Utils::AssetID>(),
+                                       normalColor, hoverColor, pressedColor};
+        }
+
+        std::optional<std::string> onClickScript;
+
+        if (json["onClick"].is_string())
+            onClickScript = json["onClick"].get<std::string>();
+
+        return Button{state, lastState, displayType, {}, onClickScript};
+    }
 };
 }; // namespace ES::Plugin::UI::Component
