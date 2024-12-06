@@ -28,6 +28,8 @@ target("PluginVkWrapper")
     add_includedirs("src/framebuffer", { public = true })
     add_includedirs("src/command", { public = true })
     add_includedirs("src/exception", { public = true })
+    add_includedirs("src/buffers", { public = true })
+    add_includedirs("src/descriptor", { public = true })
 
 for _, file in ipairs(os.files("tests/**.cpp")) do
     local name = path.basename(file)
