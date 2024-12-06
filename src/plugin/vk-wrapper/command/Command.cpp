@@ -40,7 +40,8 @@ void Command::CreateCommandBuffers(const VkDevice &device)
 
     for (size_t i = 0; i < _commandBuffers.size(); i++)
     {
-        record(_commandBuffers[i], i, info.renderPass, info.swapChainFramebuffers, info.swapChainExtent, info.graphicsPipeline);
+        record(_commandBuffers[i], i, info.renderPass, info.swapChainFramebuffers, info.swapChainExtent,
+               info.graphicsPipeline);
     }
 }
 

@@ -37,7 +37,7 @@ void Framebuffer::create(const VkDevice device, const VkExtent2D swapChainExtent
 void Framebuffer::destroy(const VkDevice device)
 {
     for (auto framebuffer : _swapChainFramebuffers)
-        vkDestroyFramebuffer(device, framebuffer, nullptr); 
+        vkDestroyFramebuffer(device, framebuffer, nullptr);
 }
 
 } // namespace ES::Plugin::Wrapper
