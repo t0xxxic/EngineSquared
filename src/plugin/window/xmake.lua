@@ -7,7 +7,7 @@ target("PluginWindow")
     set_policy("build.warning", true)
 
     add_packages("glfw")
-    
+
     add_files("src/**.cpp")
     add_includedirs("src/", {public = true})
     add_includedirs("src/resource", {public = true})
