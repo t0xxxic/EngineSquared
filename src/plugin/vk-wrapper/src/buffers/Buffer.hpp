@@ -127,6 +127,9 @@ class Buffers {
     /**
      * @brief Find the memory type in the physical device.
      *
+     * @details The memory type is found by the type filter and the properties.
+     *          The memmory type is used to allocate the buffer and image memory.
+     *
      * @param physicalDevice The Vulkan physical device.
      * @param typeFilter The type filter.
      * @param properties The properties.
