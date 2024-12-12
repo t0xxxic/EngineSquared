@@ -66,7 +66,6 @@ class Buffers {
      */
     void Destroy(const VkDevice &device);
 
-
     /**
      * @brief Create a Uniform Buffer object in the Vulkan API.
      *
