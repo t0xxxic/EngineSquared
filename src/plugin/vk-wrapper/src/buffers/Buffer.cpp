@@ -7,6 +7,7 @@ void Buffers::Create(const VkDevice &device, const VkPhysicalDevice &physicalDev
 {
     CreateVertexBuffer(device, physicalDevice, commandPool, graphicsQueue);
     CreateIndexBuffer(device, physicalDevice, commandPool, graphicsQueue);
+    // CreateUniformBuffer(device, physicalDevice, swapChainImages);
 }
 
 void Buffers::CreateVertexBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
@@ -63,6 +64,20 @@ void Buffers::CreateIndexBuffer(const VkDevice &device, const VkPhysicalDevice &
     vkFreeMemory(device, stagingBufferMemory, nullptr);
 }
 
+void Buffers::CreateUniformBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
+                                  const std::vector<VkImage> &swapChainImages)
+{
+    VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+    _uniformBuffers.resize(swapChainImages.size());
+    _uniformBuffersMemory.resize(swapChainImages.size());
+
+    for (size_t i = 0; i < swapChainImages.size(); ++i)
+        CreateBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, _uniformBuffers[i],
+                     _uniformBuffersMemory[i]);
+}
+
 void Buffers::Destroy(const VkDevice &device)
 {
     vkDestroyBuffer(device, _indexBuffer, nullptr);
@@ -70,6 +85,34 @@ void Buffers::Destroy(const VkDevice &device)
 
     vkDestroyBuffer(device, _vertexBuffer, nullptr);
     vkFreeMemory(device, _vertexBufferMemory, nullptr);
+}
+
+void Buffers::DestroyUniformBuffers(const VkDevice &device)
+{
+    for (size_t i = 0; i < _uniformBuffers.size(); ++i)
+    {
+        vkDestroyBuffer(device, _uniformBuffers[i], nullptr);
+        vkFreeMemory(device, _uniformBuffersMemory[i], nullptr);
+    }
+}
+
+void Buffers::upadateUniformBuffer(const VkDevice &device, const VkExtent2D swapChainExtent, const uint32_t currentImage)
+{
+    static auto startTime = std::chrono::high_resolution_clock::now();
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    UniformBufferObject ubo{};
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float) swapChainExtent.height, 0.1f, 10.0f);
+    ubo.proj[1][1] *= -1;
+
+    void *data = nullptr;
+    vkMapMemory(device, _uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
+    memcpy(data, &ubo, sizeof(ubo));
+    vkUnmapMemory(device, _uniformBuffersMemory[currentImage]);
 }
 
 void Buffers::CreateBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice, const VkDeviceSize size,

@@ -204,10 +204,15 @@ void Instance::RecreateSwapChain(const uint32_t width, const uint32_t height)
     framebufferInfo.swapChainImageViews = _imageView.GetImageViews();
 
     _framebuffer.Create(device, framebufferInfo);
+
+    _buffers.CreateUniformBuffer(device, _physicalDevice.Get(), _swapChain.GetSwapChainImages());
+
+    // _command.CreateCommandBuffers(device);
 }
 
 void Instance::CleanupSwapChain(const VkDevice &device)
 {
+    // _buffers.DestroyUniformBuffers(device);
     _framebuffer.Destroy(device);
     _imageView.Destroy(device);
     _swapChain.Destroy(device);
@@ -241,6 +246,8 @@ Result Instance::DrawNextImage()
     recordInfo.indexBuffer = _buffers.GetIndexBuffer();
 
     _command.RecordBuffer(recordInfo);
+
+    // _buffers.upadateUniformBuffer(device, _swapChain.GetExtent(), imageIndex);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

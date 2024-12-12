@@ -22,6 +22,7 @@
 #ifndef VERTEXBUFFER_HPP_
 #define VERTEXBUFFER_HPP_
 
+#include "UniformObject.hpp"
 #include "Vertex.hpp"
 
 #include <chrono>
@@ -65,12 +66,39 @@ class Buffers {
      */
     void Destroy(const VkDevice &device);
 
+
+    /**
+     * @brief Create a Uniform Buffer object in the Vulkan API.
+     *
+     * @param device  The Vulkan device.
+     * @param physicalDevice  The Vulkan physical device.
+     * @param swapChainImages  The swap chain images.
+     */
+    void CreateUniformBuffer(const VkDevice &device, const VkPhysicalDevice &physicalDevice,
+                             const std::vector<VkImage> &swapChainImages);
+
+    /**
+     * @brief Update the Uniform Buffer object in the Vulkan API.
+     *
+     * @param device  The Vulkan device.
+     * @param swapChainExtent  The swap chain extent.
+     * @param currentImage  The current image.
+     */
+    void upadateUniformBuffer(const VkDevice &device, const VkExtent2D swapChainExtent, const uint32_t currentImage);
+
     /**
      * @brief Destroy the UniformBuffer object.
      *
      * @param device The Vulkan device.
      */
     void DestroyUniformBuffers(const VkDevice &device);
+
+    /**
+     * @brief Get the uniform buffers.
+     *
+     * @return const std::vector<VkBuffer>& The uniform buffers.
+     */
+    [[nodiscard]] const std::vector<VkBuffer> &GetUniformBuffers() const { return _uniformBuffers; }
 
     /**
      * @brief Get the vertex buffer.
@@ -156,6 +184,8 @@ class Buffers {
     VkDeviceMemory _vertexBufferMemory;
     VkBuffer _indexBuffer;
     VkDeviceMemory _indexBufferMemory;
+    std::vector<VkBuffer> _uniformBuffers;
+    std::vector<VkDeviceMemory> _uniformBuffersMemory;
 };
 
 } // namespace ES::Plugin::Wrapper

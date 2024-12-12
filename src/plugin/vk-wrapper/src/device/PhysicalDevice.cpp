@@ -13,6 +13,19 @@ void PhysicalDevice::PickPhysicalDevice(const VkInstance &instance, const VkSurf
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
+    // std::multimap<uint32_t, VkPhysicalDevice> candidates;
+
+    // for (const auto &device : devices)
+    // {
+    //     uint32_t score = rateDeviceSuitability(device);
+    //     candidates.insert(std::make_pair(score, device));
+    // }
+
+    // if (candidates.rbegin()->first > 0)
+    //     physicalDevice = candidates.rbegin()->second;
+    // else
+    //     throw VkWrapperError("failed to find a suitable GPU!");
+
     for (const auto &device : devices)
     {
         if (IsDeviceSuitable(device, surface))
@@ -40,6 +53,13 @@ bool PhysicalDevice::IsDeviceSuitable(const VkPhysicalDevice &device, const VkSu
     }
 
     return _queueFamilies.IsComplete() && extensionsSupported && swapChainAdequate;
+
+    // VkPhysicalDeviceProperties deviceProperties;
+    // VkPhysicalDeviceFeatures deviceFeatures;
+    // vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    // vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+    // return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
 }
 
 bool PhysicalDevice::CheckDeviceExtensionSupport(const VkPhysicalDevice &device) const
