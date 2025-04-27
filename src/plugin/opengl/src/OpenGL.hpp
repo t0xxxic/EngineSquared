@@ -29,3 +29,4 @@
 #include "utils/MouseDragging/MouseDragging.hpp"
 #include "utils/Texture/Texture.hpp"
 #include "utils/Viewer/Viewer.hpp"
+#include "utils/Framebuffer/Framebuffer.hpp"
