@@ -22,6 +22,7 @@
 #include "system/AllSystems.hpp"
 
 #include "utils/Font/Font.hpp"
+#include "utils/Framebuffer/Framebuffer.hpp"
 #include "utils/GLMeshBuffer/GLMeshBuffer.hpp"
 #include "utils/GLTextBuffer/GLTextBuffer.hpp"
 #include "utils/Loader/Loader.hpp"
@@ -29,4 +30,3 @@
 #include "utils/MouseDragging/MouseDragging.hpp"
 #include "utils/Texture/Texture.hpp"
 #include "utils/Viewer/Viewer.hpp"
-#include "utils/Framebuffer/Framebuffer.hpp"
