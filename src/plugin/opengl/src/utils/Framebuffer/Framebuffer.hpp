@@ -1,6 +1,7 @@
 #pragma once
 #include "Logger.hpp"
 #include <GL/glew.h>
+#include <glm/vec2.hpp>
 
 namespace ES::Plugin::OpenGL::Utils {
 struct FramebufferSpecification {
@@ -42,7 +43,19 @@ class Framebuffer {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void Deinit() { glDeleteFramebuffers(1, &_rendererId); }
+    void Resize(const glm::vec2 &size)
+    {
+        _specification.width = size.x;
+        _specification.height = size.y;
+        Deinit();
+        Init();
+    }
+
+    void Deinit() {
+      glDeleteTextures(1, &_colorAttachment);
+      glDeleteTextures(1, &_depthAttachement);
+      glDeleteFramebuffers(1, &_rendererId);
+    }
 
     void Bind() { glBindFramebuffer(GL_FRAMEBUFFER, _rendererId); }
 
