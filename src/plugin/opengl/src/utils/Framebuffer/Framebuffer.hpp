@@ -51,10 +51,11 @@ class Framebuffer {
         Init();
     }
 
-    void Deinit() {
-      glDeleteTextures(1, &_colorAttachment);
-      glDeleteTextures(1, &_depthAttachement);
-      glDeleteFramebuffers(1, &_rendererId);
+    void Deinit()
+    {
+        glDeleteTextures(1, &_colorAttachment);
+        glDeleteTextures(1, &_depthAttachement);
+        glDeleteFramebuffers(1, &_rendererId);
     }
 
     void Bind() { glBindFramebuffer(GL_FRAMEBUFFER, _rendererId); }

@@ -12,13 +12,13 @@
 
 #include "plugin/PluginOpenGL.hpp"
 
+#include "resource/Camera/Camera.hpp"
 #include "resource/FontManager/FontManager.hpp"
 #include "resource/GLMeshBufferManager/GLMeshBufferManager.hpp"
 #include "resource/GLTextBufferManager/GLTextBufferManager.hpp"
 #include "resource/MaterialCache/MaterialCache.hpp"
 #include "resource/ShaderManager/ShaderManager.hpp"
 #include "resource/TextureManager/TextureManager.hpp"
-#include "resource/Camera/Camera.hpp"
 
 #include "system/AllSystems.hpp"
 

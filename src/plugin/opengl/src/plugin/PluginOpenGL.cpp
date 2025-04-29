@@ -38,9 +38,10 @@ void ES::Plugin::OpenGL::Plugin::Bind()
         ES::Plugin::OpenGL::System::LoadGLTextBuffer, ES::Plugin::OpenGL::System::LoadGLSpriteBuffer);
 
     RegisterSystems<ES::Plugin::RenderingPipeline::ToGPU>(
-        [](ES::Engine::Core &core) { core.GetResource<ES::Plugin::OpenGL::Utils::Framebuffer>().Bind();
-        glViewport(0, 0, core.GetResource<ES::Plugin::OpenGL::Utils::Framebuffer>().GetSpecification().width,
-                core.GetResource<ES::Plugin::OpenGL::Utils::Framebuffer>().GetSpecification().height);
+        [](ES::Engine::Core &core) {
+            core.GetResource<ES::Plugin::OpenGL::Utils::Framebuffer>().Bind();
+            glViewport(0, 0, core.GetResource<ES::Plugin::OpenGL::Utils::Framebuffer>().GetSpecification().width,
+                       core.GetResource<ES::Plugin::OpenGL::Utils::Framebuffer>().GetSpecification().height);
         },
         ES::Plugin::OpenGL::System::GLClearColor, ES::Plugin::OpenGL::System::GLClearDepth,
         ES::Plugin::OpenGL::System::GLEnableDepth, ES::Plugin::OpenGL::System::GLEnableCullFace,
