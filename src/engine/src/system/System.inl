@@ -13,7 +13,7 @@ template <typename TCallable> void ES::Engine::SystemContainer::AddSystem(TCalla
         id = std::hash<TCallable>{}(callable);
     }
 
-    if (_idToIndex.find(id) != _idToIndex.end())
+    if (_idToIndex.find(static_cast<entt::id_type>(id)) != _idToIndex.end())
     {
         ES::Utils::Log::Warn("System already exists");
         return;
