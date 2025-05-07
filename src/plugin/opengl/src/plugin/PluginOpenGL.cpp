@@ -1,3 +1,4 @@
+#include "Input.hpp"
 #include "OpenGL.hpp"
 #include "PluginInput.hpp"
 #include "PluginWindow.hpp"
