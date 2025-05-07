@@ -20,15 +20,14 @@
 #include "resource/ShaderManager.hpp"
 #include "resource/TextureManager.hpp"
 
-
 #include "system/BufferSystems.hpp"
 #include "system/ManagerSystems.hpp"
 #include "system/RenderSystems.hpp"
 #include "system/ShaderSystems.hpp"
 #include "system/WindowSystems.hpp"
 
-#include "utils/Framebuffer.hpp"
 #include "utils/Font.hpp"
+#include "utils/Framebuffer.hpp"
 #include "utils/GLMeshBuffer.hpp"
 #include "utils/GLTextBuffer.hpp"
 #include "utils/Loader.hpp"
